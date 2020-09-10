@@ -1,10 +1,13 @@
 import {TEXT} from "../shared/const";
 
-// TODO: createText 这个结构还有 content 没有完全想好，下一步做的时候再来改这里
-function createText(text) {
+// 创建 text 类型的 vdom，注意把 textContent 写到了 nodeValue 上，这样是为了代码方便，也可以不这样做
+// 初始化节点时 textContent 设置的是空，这样做以后，扫描属性时，就巧妙的修改了 textContent
+function createText(textContent) {
     return {
         type: TEXT,
-        content: text
+        props: {
+            nodeValue: textContent
+        }
     }
 }
 
@@ -21,7 +24,7 @@ function createElement (tagName, attributes, ...children) {
             children: children.map(child => typeof child === 'string' ? createText(child) : child)
         }
     };
-    console.log('res', res);
+    // console.log('res', res);
     return res;
 }
 
