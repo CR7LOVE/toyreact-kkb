@@ -25,6 +25,19 @@ function createElement (tagName, attributes, ...children) {
             children: children.map(child => typeof child === 'string' ? createText(child) : child)
         }
     };
+
+    // 类组件 defaultProps 的情况
+    if(tagName && tagName.defaultProps) {
+        let props = tagName.defaultProps;
+        for(let prop in props) {
+            if(Object.prototype.hasOwnProperty.call(props, prop)) {
+                if(res.props[prop] === undefined) {
+                    res.props[prop] = props[prop]
+                }
+            }
+        }
+    }
+
     // console.log('res', res);
     return res;
 }

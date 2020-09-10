@@ -7,6 +7,10 @@ import './index.css';
 
 // 测试 class 组件
 class ClassComponent extends Component {
+    static defaultProps = {
+        color: 'pink'
+    };
+
     render() {
         return (
             <div className="border">
