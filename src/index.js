@@ -8,13 +8,18 @@ import './index.css';
 // 测试 class 组件
 class ClassComponent extends Component {
     render() {
-        return <p>这是 ClassComponent</p>
+        return (
+            <div className="border">
+                {this.props.name}
+                <p className={this.props.color}>color omg</p>
+            </div>
+        );
     }
 }
 
 // 测试 function 组件
-function FunctionComponent() {
-    return <p>这是 FunctionComponent</p>
+function FunctionComponent({name}) {
+    return <div className="border">{name}</div>
 }
 
 ReactDOM.render(
@@ -25,9 +30,9 @@ ReactDOM.render(
 
         init
 
-        <ClassComponent/>
+        <ClassComponent name="class component" />
 
-        <FunctionComponent/>
+        <FunctionComponent name="function component" />
 
         <>
             <p>fragment1</p>

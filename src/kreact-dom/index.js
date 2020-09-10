@@ -1,6 +1,6 @@
 import {TEXT} from "../shared/const";
 
-function createDOMAccordingToType(tagName) {
+function createDOMAccordingToType(tagName, props) {
     let result;
     if (tagName === TEXT) { // 文本
         result = document.createTextNode('');
@@ -8,9 +8,9 @@ function createDOMAccordingToType(tagName) {
         result = document.createElement(tagName);
     } else if(typeof tagName === 'function') { // 有两种情况：class 组件和 function 组件
         if(tagName.isReactComponent) { // class 组件
-            result = createNode(new tagName().render())
+            result = createNode(new tagName(props).render())
         } else { // function 组件
-            result = createNode(tagName());
+            result = createNode(tagName(props));
         }
     } else { // fragment 的情况
         result = document.createDocumentFragment();
@@ -47,7 +47,7 @@ function createNode(vnode) {
     const { type, props } = vnode;
 
     // 1. 根据不同的 type 生成对应的 dom
-    result = createDOMAccordingToType(type);
+    result = createDOMAccordingToType(type, props);
 
     // 2. 遍历属性，把属性添加到元素上
     addAttributesToDOM(props, result);
