@@ -12,6 +12,8 @@ function createDOMAccordingToType(tagName) {
         } else { // function 组件
             result = createNode(tagName());
         }
+    } else { // fragment 的情况
+        result = document.createDocumentFragment();
     }
     return result;
 }

@@ -17,18 +17,22 @@ function FunctionComponent() {
     return <p>这是 FunctionComponent</p>
 }
 
-// <>
-// <p>fragment1</p>
-// <p>fragment2</p>
-// </>
-
 ReactDOM.render(
     <div id="a">
         <p>a</p>
+
         <p>b</p>
+
         init
+
         <ClassComponent/>
+
         <FunctionComponent/>
+
+        <>
+            <p>fragment1</p>
+            <p>fragment2</p>
+        </>
     </div>,
     document.getElementById('root')
 );
