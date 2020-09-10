@@ -1,3 +1,4 @@
+import { Component } from "./Component";
 import {TEXT} from "../shared/const";
 
 // 创建 text 类型的 vdom，注意把 textContent 写到了 nodeValue 上，这样是为了代码方便，也可以不这样做
@@ -31,3 +32,7 @@ function createElement (tagName, attributes, ...children) {
 export default {
     createElement
 };
+
+export {
+    Component
+}

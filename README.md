@@ -26,9 +26,10 @@
     函数式组件的返回值，class 组件 render() 的返回值都是 JSX。
     
 综上，共需要实现三部分：ReactDOM.render，React.createElement 和 Component。 
-### 写代码思路：
+#### 写代码思路：
 1. 实现 React.createElement，完成后在 createElement 中能打印出返回的 vdom 结构
 2. 实现 ReactDOM.render, render(jsx, element), 所以有两步
     21. 将 jsx 返回的 vdom 转为 dom
     22. element.appendChild(dom)
     这步完成后，页面就显示出来了。
+3. 完成自定义标签（包括函数式组件和 class 组件）和空标签（fragment）。class 组件需要写一个基类 Component
