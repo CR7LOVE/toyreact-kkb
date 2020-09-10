@@ -25,4 +25,6 @@
     创建时区分不同情况即可，其它情况其实还有文本节点，fragment。  
     函数式组件的返回值，class 组件 render() 的返回值都是 JSX。
     
-综上，共需要实现三部分：ReactDOM.render，React.createElement 和 Component。     
+综上，共需要实现三部分：ReactDOM.render，React.createElement 和 Component。 
+### 写代码思路：
+1. 实现 React.createElement，完成后在 createElement 中能打印出返回的 vdom 结构
