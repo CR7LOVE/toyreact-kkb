@@ -13,12 +13,10 @@ class ClassComponent extends Component {
 }
 
 // 测试 function 组件
-// function FunctionComponent() {
-//     return <p>这是 FunctionComponent</p>
-// }
+function FunctionComponent() {
+    return <p>这是 FunctionComponent</p>
+}
 
-// <FunctionComponent/>
-//
 // <>
 // <p>fragment1</p>
 // <p>fragment2</p>
@@ -30,7 +28,7 @@ ReactDOM.render(
         <p>b</p>
         init
         <ClassComponent/>
-
+        <FunctionComponent/>
     </div>,
     document.getElementById('root')
 );

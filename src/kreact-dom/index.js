@@ -6,8 +6,12 @@ function createDOMAccordingToType(tagName) {
         result = document.createTextNode('');
     } else if (typeof tagName === 'string') { // div, p, span 这些原生标签
         result = document.createElement(tagName);
-    } else if(typeof tagName === 'function') {
-        result = createNode(new tagName().render()) // class 组件
+    } else if(typeof tagName === 'function') { // 有两种情况：class 组件和 function 组件
+        if(tagName.isReactComponent) { // class 组件
+            result = createNode(new tagName().render())
+        } else { // function 组件
+            result = createNode(tagName());
+        }
     }
     return result;
 }
