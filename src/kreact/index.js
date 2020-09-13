@@ -7,7 +7,8 @@ function createText(textContent) {
     return {
         type: TEXT,
         props: {
-            nodeValue: textContent
+            nodeValue: textContent,
+            children: []
         }
     }
 }

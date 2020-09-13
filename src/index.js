@@ -37,11 +37,6 @@ ReactDOM.render(
         <ClassComponent name="class component" />
 
         <FunctionComponent name="function component" />
-
-        <>
-            <p>fragment1</p>
-            <p>fragment2</p>
-        </>
     </div>,
     document.getElementById('root')
 );
