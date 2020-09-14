@@ -33,6 +33,8 @@ function createNode(vnode) {
     // 2. 遍历属性，把属性添加到元素上
     addAttributesToDOM(props, result);
 
+    // day1 这里有遍历 children，现在没有了，因为有了 fiber 架构，最后会根据 fiber 架构逐个添加
+
     return result;
 }
 
@@ -131,9 +133,28 @@ function performUnitOfWork(fiber) {
     }
 }
 
+function commitWorker(fiber) {
+    if (!fiber) { // 不写会死循环
+        return;
+    }
+
+    let parentNodeFiber = fiber.return;
+    while(!parentNodeFiber.node) {
+        parentNodeFiber = parentNodeFiber.return;
+    }
+    const parentNode = parentNodeFiber.node;
+    if (fiber.effectTag === PLACEMENT && fiber.node !== null) { // 不写会报错
+        parentNode.appendChild(fiber.node);
+    }
+
+    commitWorker(fiber.child);
+    commitWorker(fiber.sibling);
+}
+
 function commitRoot() {
-    console.log('xxxx', wipRoot)
-    // wipRoot = null;
+    console.log('fiber 架构', wipRoot);
+    commitWorker(wipRoot.child);
+    wipRoot = null;
 }
 
 function workLoop(idleDeadline) {
@@ -143,8 +164,12 @@ function workLoop(idleDeadline) {
     }
 
     // 2. 根据 fiber 架构形成 dom 关系，渲染到页面上
-    // TODO，解释一下 !nextUnitOfWork
-
+    // 解释一下 !nextUnitOfWork：
+    // 假设最后一个子节点有文本节点，那么，在 performUnitOfWork 中，想返回要一个节点时，
+    // 找 child ，没有
+    // 找 sibing，没有，再找父元素
+    // 父元素中找 sibing，没有，再找父元素....
+    // 最后找到 container，container 的父元素是 undefined，所以 while 循环终止，至此也没返回任何值，即返回值是 undefine
     if (!nextUnitOfWork && wipRoot) {
         commitRoot();
     }
