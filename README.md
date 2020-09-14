@@ -54,23 +54,23 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
 
 2. 利用 requestIdleCallback api，在 requestIdleCallback 回调中，利用 vdom 生成 fiber，并根据 fiber 结构生成建立真正的 dom 结构并添加到页面上。   
 
-3. fiber 是个链表结构，是加强版的 vdom，仍然是个对象，但是有了几个指向。具体结构类型在代码注释中有。   
-
-4. 初始的 fiber 是 ReactDOM.render() 的参数。  
-
-5. day 1 中 ReactDOM.render 的函数体中很明显：将 vnode -> node；将 node 插入到元素中。  
-    而今天，函数体中变成了初始化首个 fiber (wipRoot) 与 下一个 fiber (nextUnitOfWork)。
+3. 第一阶段，利用 vdom 生成 fiber 阶段：  
+    31. day 1 中 ReactDOM.render 的函数体中很明显：将 vnode -> node；将 node 插入到元素中。  
+    而今天，函数体中变成了初始化首个 fiber (wipRoot) 与 下一个 fiber (nextUnitOfWork)。  
+    初始的 fiber 是 ReactDOM.render() 的参数。
+    32. fiber 架构的形成是个循环的过程，从 src/index 中挂载的根元素开始。  
+    过程中会对 元素类型 进行判断，不同的类型都去 reconcileChildren 以形成链表。  
+    类型分 3 种，原生标签, class 组件和 function 组件。  
+    原生标签还会建立真正的 dom 元素以便后期使用。 
+    33. fiber 是个链表结构，是加强版的 vdom，仍然是个对象，但是有了几个指向。具体结构类型在代码注释中有。      
+    34. fiber 中 children 与 child 属性都有。children 属性从 vdom 衍生而来，用于生成 child 和 sibling。之后就没啥用了。生成 dom 并不需要 children。      
+    35. fiber 结构中 "自定义元素自己的内容" 是放在自己 fiber 的 child 下的。而在第 1 节课中，vdom 结构并没有体现出自定义元素自己的内容，因为 vdom 自定义元素的解析是在 ReactDOM.render() 执行时才判断元素类型，如果是自定义元素，那么会将其返回的 vdom 生成真实 dom，插入到父元素下。  
+所以，vdom 中体现不出来完整的结构。但 fiber 体现出来了。
+    36. 最后，可以在 workLoop() 中的第二步打印一下形成的 fiber 架构，看是否正确。
     
-6. 根据 fiber 结构生成建立真正的 dom 结构并添加到页面上，其实，根据 fiber 结构建立 dom 结构与根据 vdom 建立 dom 结构，我觉得两者非常相似，都可以总结为，
-    有了一个结构，然后根据这个结构生成 dom。只不过 vdom 是树，而 fiber 是链表，所以细节上不一样而已。
-    
-7. fiber 结构中 "自定义元素自己的内容" 是放在自己 fiber 的 child 下的。
-   而在第 1 节课中，vdom 结构并没有体现出自定义元素自己的内容，因为 vdom 自定义元素的解析是在 ReactDOM.render() 执行时才判断元素类型，如果是自定义元素，那么会将其返回的 vdom 生成真实 dom，插入到父元素下。
-   所以，vdom 中体现不出来完整的结构。但 fiber 体现出来了。
-   
-8. 可以在 workLoop() 中的第二步打印一下形成的 fiber 架构，再去根据 fiber 渲染出页面。
-
-9. fiber 中 child 与 children 属性都有。两个属性都从 vdom 衍生而来。children 用于生成 child 和 sibling。
+4. 第二阶段，根据 fiber 结构建立真正的 dom 结构添加到页面上：  
+其实，根据 fiber 结构建立 dom 结构与根据 vdom 建立 dom 结构，我觉得两者非常相似，都可以总结为，  
+有了一个结构，然后根据这个结构生成 dom。只不过 vdom 是树，而 fiber 是链表，所以细节上不一样而已。
 
 
 #### 写代码思路：
