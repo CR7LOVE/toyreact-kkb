@@ -70,6 +70,8 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
    
 8. 可以在 workLoop() 中的第二步打印一下形成的 fiber 架构，再去根据 fiber 渲染出页面。
 
+9. fiber 中 child 与 children 属性都有。两个属性都从 vdom 衍生而来。children 用于生成 child 和 sibling。
+
 
 #### 写代码思路：
 1. react-dom/index.js 中添加 requestIdleCallback() 并写 requestIdleCallback 的回调
