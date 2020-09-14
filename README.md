@@ -63,6 +63,12 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
     
 6. 根据 fiber 结构生成建立真正的 dom 结构并添加到页面上，其实，根据 fiber 结构建立 dom 结构与根据 vdom 建立 dom 结构，我觉得两者非常相似，都可以总结为，
     有了一个结构，然后根据这个结构生成 dom。只不过 vdom 是树，而 fiber 是链表，所以细节上不一样而已。
+    
+7. fiber 结构中 "自定义元素自己的内容" 是放在自己 fiber 的 child 下的。
+   而在第 1 节课中，vdom 结构并没有体现出自定义元素自己的内容，因为 vdom 自定义元素的解析是在 ReactDOM.render() 执行时才判断元素类型，如果是自定义元素，那么会将其返回的 vdom 生成真实 dom，插入到父元素下。
+   所以，vdom 中体现不出来完整的结构。但 fiber 体现出来了。
+   
+8. 可以在 workLoop() 中的第二步打印一下形成的 fiber 架构，再去根据 fiber 渲染出页面。
 
 
 #### 写代码思路：
@@ -77,7 +83,8 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
         如果是 原生标签，直接调用  reconcileChildren() 生成 fiber 架构。小细节是，先生成一下真实 node，node 是 fiber 架构的一部分。前两个都不可能有 node。  
         212. 返回下一个要更新的 fiber，以保证循环持续进行。  
         优先返回 fiber.child，没有的话返回 fiber.sibling，再没有的话，找 fiber 的父元素。  
-        找到后，父元素必然已经形成了 fiber，父元素的 child 必然已经形成了 fiber，所以应该返回父元素的 sibling。    
+        找到后，父元素必然已经形成了 fiber，父元素的 child 必然已经形成了 fiber，所以应该返回父元素的 sibling。 
+        213. 在 workLoop() 中的第二步打印一下形成的 fiber 架构，看下是否正确，ok 的话再去执行下一步。    
     22. 将 fiber 架构的关系应用到真实 dom 中。因为 fiber 是链表，所以，具体过程是一个递归，将"当前 fiber"，"当前 fiber 的 child"，"当前 fiber 的 sibling" 追加到相应的父元素下，
         一直循环递归。
   
