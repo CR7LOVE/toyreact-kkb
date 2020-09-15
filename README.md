@@ -111,7 +111,8 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
 7. 添加之前，先添加 wipFiber 全局变量，用来表示当前正在工作的 fiber，然后在 updateFunctionComponent 中初始化它，  
     添加 hooks 和 hooksIndex 变量。  
 8. wipFiber.hooks 和 wipFiber.hooksIndex 变量已经有了，它俩的值必然是 useState 中的东西。
-    hooks 会 push 某个 hook，hook 是个对象，包含了 state(当前状态值) 和 queue(要更新的值)。 
+    hooks 会 push 某个 hook，hook 是个对象，包含了 state(当前状态值) 和 queue(要更新的值)。
+9. reconcileChildren() 中添加 base 和 diff 
 
 
 #### 写代码思路：

@@ -1,4 +1,4 @@
-import {PLACEMENT, TEXT} from "../shared/const";
+import {DELETION, PLACEMENT, TEXT, UPDATE} from "../shared/const";
 
 let wipRoot = null; // work in progress fiber
 let nextUnitOfWork = null; // fiber for loop
@@ -72,16 +72,48 @@ function render (vnode, element) {
 // 遍历 children，为当前节点形成 fiber 架构
 function reconcileChildren(fiber, children) {
     let prevSibling = null;
+    let oldFiber = fiber.base && fiber.base.child; // TODO：这里为什么不是 base，而是 base.child
     for (let i = 0; i < children.length; i++) {
         let child = children[i];
-        let newFiber = {
-            type: child.type,
-            props: child.props,
-            node: null,
-            base: null,
-            return: fiber,
-            effectTag: PLACEMENT, // 注意有个 effectTag，整个对象要注意一下
-        };
+        let newFiber = null;
+
+        // 这次没有 key，下次才有
+        const sameType = child && oldFiber && child.type === oldFiber.type;
+        if (sameType) {
+            // 节点复用
+            newFiber = {
+                type: child.type,
+                props: child.props,
+                node: oldFiber.node,
+                base: oldFiber,
+                return: fiber,
+                effectTag: UPDATE,
+            };
+        }
+        if(!sameType && child) {
+            // 节点插入
+            newFiber = {
+                type: child.type,
+                props: child.props,
+                node: null,
+                base: null,
+                return: fiber,
+                effectTag: PLACEMENT,
+            };
+        }
+
+        if(!sameType && oldFiber) {
+            // 删除, TODO
+            oldFiber.effectTag = DELETION;
+        }
+
+        // 本次先不考虑顺序
+        // 1 2 3
+        // 2 3 4
+        if (oldFiber) {
+            oldFiber = oldFiber.sibling;
+        }
+
         if (i === 0 ) {
             fiber.child = newFiber;
         } else {
