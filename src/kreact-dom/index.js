@@ -173,9 +173,20 @@ function workLoop(idleDeadline) {
     if (!nextUnitOfWork && wipRoot) {
         commitRoot();
     }
+
+    // 初始化阶段写不写这个没关系，但是，如果点一个按钮要更新界面的话，还是要写这个的。
+    // 否则的话，此函数执行完，就不会再被触发了。
+    window.requestIdleCallback(workLoop);
 }
 
 window.requestIdleCallback(workLoop);
+
+export function useState(init) {
+    const setState = action => {
+
+    };
+    return [init, setState]
+}
 
 export default {
     render

@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import {useState} from "react";
+// import React, {Component} from 'react';
+// import ReactDOM from 'react-dom';
+// import {useState} from "react";
 
-// import React, { Component } from './kreact';
-// import ReactDOM from './kreact-dom';
+import React, { Component } from './kreact';
+import ReactDOM, {useState} from './kreact-dom';
 
 import './index.css';
 

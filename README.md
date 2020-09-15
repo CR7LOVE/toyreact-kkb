@@ -99,9 +99,12 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
 
 #### 过程细分
 1. 先写 useState demo，包含点击时的 setState，确保 ok 后，换成自己的 useState。
-
+2. setState() 执行时，怎样触发界面更新？
+3. 因为初始化 fiber 时用的是 requestIdleCallback()，所以，首先在 workLoop 中仍然添加上 requestIdleCallback() ，否则更新阶段就无法更新了。
+4. 
 
 
 #### 写代码思路：
 1. 先写 useState demo，包含点击时的 setState，确保 ok 后，换成自己的 useState。
+2. 
   
