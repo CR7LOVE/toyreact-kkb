@@ -29,15 +29,9 @@ function createDOMAccordingToType(tagName, props) {
 }
 
 function addAttributesToDOM(props, result) {
-    for(const prop in props) {
-        if(Object.prototype.hasOwnProperty.call(props, prop)) {
-            if(prop !== 'children') {
-                result[prop] = props[prop];
-                // 不能使用 result.setAttribute(prop, props[prop])，因为 text 类型没有 setAttribute，element 类型有。
-                // 统一一下使用了上述方法。
-            }
-        }
-    }
+    Object.keys(props)
+        .filter(k => k !== 'children')
+        .forEach(k => result[k] = props[k])
 }
 
 // 将 vnode 转为 真实 dom
