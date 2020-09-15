@@ -89,4 +89,19 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
         213. 在 workLoop() 中的第二步打印一下形成的 fiber 架构，看下是否正确，ok 的话再去执行下一步。    
     22. 将 fiber 架构的关系应用到真实 dom 中。因为 fiber 是链表，所以，具体过程是一个递归，将"当前 fiber"，"当前 fiber 的 child"，"当前 fiber 的 sibling" 追加到相应的父元素下，
         一直循环递归。
+        
+### 第 3 天总结
+更新过程，没有写老的 setState，而是写的 useState 这个 hook 的源码。  
+先用 useState 写一个简单的 demo，包括 setState，ok 的话，再注释掉官方的 useState，写自己的 useState。
+
+#### 一句话总结课堂内容
+
+
+#### 过程细分
+1. 先写 useState demo，包含点击时的 setState，确保 ok 后，换成自己的 useState。
+
+
+
+#### 写代码思路：
+1. 先写 useState demo，包含点击时的 setState，确保 ok 后，换成自己的 useState。
   
