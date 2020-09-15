@@ -245,7 +245,7 @@ export function useState(init) {
     wipFiber.hooks.push(hook);
     wipFiber.hooksIndex++;
     console.log('wipFiber', wipFiber)
-    return [init, setState]
+    return [hook.state, setState]
 }
 
 export default {
