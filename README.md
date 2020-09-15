@@ -114,6 +114,7 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
     hooks 会 push 某个 hook，hook 是个对象，包含了 state(当前状态值) 和 queue(要更新的值)。
 9. reconcileChildren() 中添加 base 和 diff
 10. 在 addAttributesToDOM() 中添加 on 事件 
+11. fiber 更新架构已经形成，可以重构 commitWorker 了，添加 UPDATE 逻辑。注意 updateNode() 多了一个参数是旧的 props
 
 
 #### 写代码思路：
@@ -125,4 +126,4 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
 5. useState 中写 hook 对象，添加到上一步 wipFiber 下。顺便把 oldHook 逻辑和 newHook 都写上。
 6. reconcileChildren() 中添加 base 和 diff
 7. 在 addAttributesToDOM() 中添加 on 事件
-  
+8. commitWorker 中添加 UPDATE 逻辑，重构 updateNode()，添加旧 props 参数

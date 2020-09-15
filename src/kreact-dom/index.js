@@ -28,15 +28,30 @@ function createDOMAccordingToType(tagName, props) {
     return result;
 }
 
-function updateNode(props, result) {
-    Object.keys(props)
+function updateNode(node, prevVal, nextVal ) {
+    Object.keys(prevVal)
+        .filter(k => k !== "children")
+        .forEach(k => {
+            // ! 瞎写一下
+            // 只要是on开头，我就判断是事件
+            if (k.slice(0, 2) === "on") {
+                let eventName = k.slice(2).toLowerCase();
+                node.removeEventListener(eventName, prevVal[k]); // remove 掉，不然有 bug
+            } else {
+                if (!(k in nextVal)) {
+                    node[k] = "";
+                }
+            }
+        });
+
+    Object.keys(nextVal)
         .filter(k => k !== 'children')
         .forEach(k => {
             if (k.slice(0, 2) === "on") {
                 let eventName = k.slice(2).toLowerCase();
-                result.addEventListener(eventName, props[k]);
+                node.addEventListener(eventName, nextVal[k]);
             } else {
-                result[k] = props[k];
+                node[k] = nextVal[k];
             }
         })
 }
@@ -50,7 +65,7 @@ function createNode(vnode) {
     result = createDOMAccordingToType(type, props);
 
     // 2. 遍历属性，把属性添加到元素上
-    updateNode(props, result);
+    updateNode(result, {}, props);
 
     // day1 这里有遍历 children，现在没有了，因为有了 fiber 架构，最后会根据 fiber 架构逐个添加
 
@@ -184,6 +199,8 @@ function commitWorker(fiber) {
     const parentNode = parentNodeFiber.node;
     if (fiber.effectTag === PLACEMENT && fiber.node !== null) { // 不写会报错
         parentNode.appendChild(fiber.node);
+    } else if (fiber.effectTag === UPDATE && fiber.node !== null) {
+        updateNode(fiber.node, fiber.base.props, fiber.props)
     }
 
     commitWorker(fiber.child);
