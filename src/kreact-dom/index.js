@@ -100,7 +100,7 @@ function updateClassComponent(fiber) {
 function updateFunctionComponent(fiber) {
     wipFiber = fiber;
     wipFiber.hooks = [];
-    wipFiber.hooksIndex = 0;
+    wipFiber.hooksIndex = 0; // 有几个 hook，值就是几
     const { type, props } = fiber;
     const children = [type(props)];
     reconcileChildren(fiber, children);
@@ -189,7 +189,18 @@ function workLoop(idleDeadline) {
 window.requestIdleCallback(workLoop);
 
 export function useState(init) {
+    const oldHook = wipFiber.base && wipFiber.base.hooks[wipFiber.hooksIndex];
+
+    const hook = {
+        state: oldHook ? oldHook.state : init, // 存储当前状态值
+        queue: oldHook ? oldHook.queue : []    // 存储要更新的值
+    };
+
+    // 模拟批量更新
+    hook.queue.forEach(action => (hook.state = action));
+
     const setState = action => {
+        hook.queue.push(action);
         wipRoot = {
             node: currentRoot.node,
             props: currentRoot.props,
@@ -197,6 +208,10 @@ export function useState(init) {
         };
         nextUnitOfWork = wipRoot;
     };
+
+    wipFiber.hooks.push(hook);
+    wipFiber.hooksIndex++;
+    console.log('wipFiber', wipFiber)
     return [init, setState]
 }
 
