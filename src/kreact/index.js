@@ -23,7 +23,7 @@ function createElement (tagName, attributes, ...children) {
         type: tagName,
         props: {
             ...clonedAttributes,
-            children: children.map(child => typeof child === 'string' ? createText(child) : child)
+            children: children.map(child => typeof child === 'object' ? child : createText(child))
         }
     };
 
