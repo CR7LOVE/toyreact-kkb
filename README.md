@@ -93,9 +93,10 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
 ### 第 3 天总结
 更新过程，没有写老的 setState，而是写的 useState 这个 hook 的源码。  
 先用 useState 写一个简单的 demo，包括 setState，ok 的话，再注释掉官方的 useState，写自己的 useState。
+写 useState 过程中，会写 diff 逻辑。
 
 #### 一句话总结课堂内容
-
+添加 useState 源码和更新过程代码(必然有 diff)。
 
 #### 过程细分
 1. 先写 useState demo，包含点击时的 setState，确保 ok 后，换成自己的 useState。
