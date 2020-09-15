@@ -1,5 +1,22 @@
 import {PLACEMENT, TEXT} from "../shared/const";
 
+let wipRoot = null; // work in progress fiber
+let nextUnitOfWork = null; // fiber for loop
+
+let currentRoot = null; // wipRoot 的备份
+
+// fiber 结构：
+// type: 类型
+// props:
+// key
+
+// child: 第一个孩子
+// sibling: 兄弟
+// return：父元素
+
+// node: 真实 dom 节点
+// base: 当前元素，本次没用到
+
 function createDOMAccordingToType(tagName, props) {
     let result;
     if (tagName === TEXT) { // 文本
@@ -37,21 +54,6 @@ function createNode(vnode) {
 
     return result;
 }
-
-let wipRoot = null; // work in progress fiber
-let nextUnitOfWork = null; // fiber for loop
-
-// fiber 结构：
-// type: 类型
-// props:
-// key
-
-// child: 第一个孩子
-// sibling: 兄弟
-// return：父元素
-
-// node: 真实 dom 节点
-// base: 当前元素，本次没用到
 
 function render (vnode, element) {
     // 初始化第一个 fiber 和用于循环的 fiber
@@ -154,6 +156,7 @@ function commitWorker(fiber) {
 function commitRoot() {
     console.log('fiber 架构', wipRoot);
     commitWorker(wipRoot.child);
+    currentRoot = wipRoot;
     wipRoot = null;
 }
 
@@ -183,7 +186,12 @@ window.requestIdleCallback(workLoop);
 
 export function useState(init) {
     const setState = action => {
-
+        wipRoot = {
+            node: currentRoot.node,
+            props: currentRoot.props,
+            base: currentRoot
+        };
+        nextUnitOfWork = wipRoot;
     };
     return [init, setState]
 }

@@ -101,10 +101,14 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
 1. 先写 useState demo，包含点击时的 setState，确保 ok 后，换成自己的 useState。
 2. setState() 执行时，怎样触发界面更新？
 3. 因为初始化 fiber 时用的是 requestIdleCallback()，所以，首先在 workLoop 中仍然添加上 requestIdleCallback() ，否则更新阶段就无法更新了。
-4. 
+4. 在 useState 的 setState 函数中，想办法让 nextUnitOfWork 有值，这样才能继续工作。以前初始化完以后，此变量已经成 falsy 值了。
+5. 其实就是让 nextUnitOfWork 再次接收初始 wipRoot，但是 wipRoot 被清除了，所以，用另一个变量做 wipRoot 的备份，  
+    赋值给 nextUnitOfWork 以便 workLoop 中的 while 循环能成立以执行。  
 
 
 #### 写代码思路：
 1. 先写 useState demo，包含点击时的 setState，确保 ok 后，换成自己的 useState。
-2. 
+2. workLoop 中添加 requestIdleCallback()
+3. useState 的 setState中，让 nextUnitOfWork = wipRoot 以重启 workLoop(), 而 wipRoot 因为被清，  
+    所以，添加全局 currentRoot 变量，实质是 wipRoot 的备份。
   
