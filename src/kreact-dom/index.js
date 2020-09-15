@@ -28,7 +28,7 @@ function createDOMAccordingToType(tagName, props) {
     return result;
 }
 
-function addAttributesToDOM(props, result) {
+function updateNode(props, result) {
     Object.keys(props)
         .filter(k => k !== 'children')
         .forEach(k => {
@@ -50,7 +50,7 @@ function createNode(vnode) {
     result = createDOMAccordingToType(type, props);
 
     // 2. 遍历属性，把属性添加到元素上
-    addAttributesToDOM(props, result);
+    updateNode(props, result);
 
     // day1 这里有遍历 children，现在没有了，因为有了 fiber 架构，最后会根据 fiber 架构逐个添加
 
