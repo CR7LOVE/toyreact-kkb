@@ -115,6 +115,7 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
 9. reconcileChildren() 中添加 base 和 diff
 10. 在 addAttributesToDOM() 中添加 on 事件 
 11. fiber 更新架构已经形成，可以重构 commitWorker 了，添加 UPDATE 逻辑。注意 updateNode() 多了一个参数是旧的 props
+12. 以上已经能展示并且更新 button 了，接下来添加删除逻辑
 
 
 #### 写代码思路：
@@ -127,3 +128,4 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
 6. reconcileChildren() 中添加 base 和 diff
 7. 在 addAttributesToDOM() 中添加 on 事件
 8. commitWorker 中添加 UPDATE 逻辑，重构 updateNode()，添加旧 props 参数
+9. 展示和更新已经 ok。添加删除逻辑。

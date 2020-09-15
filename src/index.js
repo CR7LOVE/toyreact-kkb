@@ -31,6 +31,7 @@ function FunctionComponent({name}) {
     <div className="border">
         {name}
         <button onClick={() => setCount(count + 1)}>{count}</button>
+        {count % 2 ? <button>omg</button> : <span>omg</span>}
     </div>)
 }
 

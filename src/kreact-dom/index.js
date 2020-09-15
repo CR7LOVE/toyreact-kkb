@@ -6,6 +6,8 @@ let nextUnitOfWork = null; // fiber for loop
 let currentRoot = null; // wipRoot 的备份
 let wipFiber = null;
 
+let deletions = [];
+
 // fiber 结构：
 // type: 类型
 // props:
@@ -83,6 +85,7 @@ function render (vnode, element) {
     };
 
     nextUnitOfWork = wipRoot;
+    // deletions = []; // 这儿写不写，效果都一样，有问题再放开
 }
 
 // 遍历 children，为当前节点形成 fiber 架构
@@ -119,8 +122,9 @@ function reconcileChildren(fiber, children) {
         }
 
         if(!sameType && oldFiber) {
-            // 删除, TODO
+            // 删除
             oldFiber.effectTag = DELETION;
+            deletions.push(oldFiber)
         }
 
         // 本次先不考虑顺序
@@ -187,6 +191,14 @@ function performUnitOfWork(fiber) {
     }
 }
 
+function commitDeletions(fiber, parentNode) {
+    if (fiber.node) {
+        parentNode.removeChild(fiber.node)
+    } else {
+        commitDeletions(fiber.child, parentNode)
+    }
+}
+
 function commitWorker(fiber) {
     if (!fiber) { // 不写会死循环
         return;
@@ -201,6 +213,8 @@ function commitWorker(fiber) {
         parentNode.appendChild(fiber.node);
     } else if (fiber.effectTag === UPDATE && fiber.node !== null) {
         updateNode(fiber.node, fiber.base.props, fiber.props)
+    } else if (fiber.effectTag === DELETION && fiber.node !== null) {
+        commitDeletions(fiber, parentNode);
     }
 
     commitWorker(fiber.child);
@@ -209,6 +223,7 @@ function commitWorker(fiber) {
 
 function commitRoot() {
     console.log('fiber 架构', wipRoot);
+    deletions.forEach(commitWorker);
     commitWorker(wipRoot.child);
     currentRoot = wipRoot;
     wipRoot = null;
@@ -257,6 +272,7 @@ export function useState(init) {
             base: currentRoot
         };
         nextUnitOfWork = wipRoot;
+        deletions = [];
     };
 
     wipFiber.hooks.push(hook);
