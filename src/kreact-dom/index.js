@@ -31,7 +31,14 @@ function createDOMAccordingToType(tagName, props) {
 function addAttributesToDOM(props, result) {
     Object.keys(props)
         .filter(k => k !== 'children')
-        .forEach(k => result[k] = props[k])
+        .forEach(k => {
+            if (k.slice(0, 2) === "on") {
+                let eventName = k.slice(2).toLowerCase();
+                result.addEventListener(eventName, props[k]);
+            } else {
+                result[k] = props[k];
+            }
+        })
 }
 
 // 将 vnode 转为 真实 dom

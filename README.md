@@ -112,7 +112,8 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
     添加 hooks 和 hooksIndex 变量。  
 8. wipFiber.hooks 和 wipFiber.hooksIndex 变量已经有了，它俩的值必然是 useState 中的东西。
     hooks 会 push 某个 hook，hook 是个对象，包含了 state(当前状态值) 和 queue(要更新的值)。
-9. reconcileChildren() 中添加 base 和 diff 
+9. reconcileChildren() 中添加 base 和 diff
+10. 在 addAttributesToDOM() 中添加 on 事件 
 
 
 #### 写代码思路：
@@ -121,5 +122,7 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
 3. useState 的 setState中，让 nextUnitOfWork = wipRoot 以重启 workLoop(), 而 wipRoot 因为被清，  
     所以，添加全局 currentRoot 变量，实质是 wipRoot 的备份。
 4. 添加 wipFiber 全局变量，在 updateFunctionComponent() 中初始化 wipFiber。
-5. useState 中写 hook 对象，添加到上一步 wipFiber 下。顺便把 oldHook 逻辑和 newHook 都写上。 
+5. useState 中写 hook 对象，添加到上一步 wipFiber 下。顺便把 oldHook 逻辑和 newHook 都写上。
+6. reconcileChildren() 中添加 base 和 diff
+7. 在 addAttributesToDOM() 中添加 on 事件
   
