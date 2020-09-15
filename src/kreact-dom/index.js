@@ -4,6 +4,7 @@ let wipRoot = null; // work in progress fiber
 let nextUnitOfWork = null; // fiber for loop
 
 let currentRoot = null; // wipRoot 的备份
+let wipFiber = null;
 
 // fiber 结构：
 // type: 类型
@@ -97,6 +98,9 @@ function updateClassComponent(fiber) {
 }
 
 function updateFunctionComponent(fiber) {
+    wipFiber = fiber;
+    wipFiber.hooks = [];
+    wipFiber.hooksIndex = 0;
     const { type, props } = fiber;
     const children = [type(props)];
     reconcileChildren(fiber, children);

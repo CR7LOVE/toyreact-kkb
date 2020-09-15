@@ -103,7 +103,13 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
 3. 因为初始化 fiber 时用的是 requestIdleCallback()，所以，首先在 workLoop 中仍然添加上 requestIdleCallback() ，否则更新阶段就无法更新了。
 4. 在 useState 的 setState 函数中，想办法让 nextUnitOfWork 有值，这样才能继续工作。以前初始化完以后，此变量已经成 falsy 值了。
 5. 其实就是让 nextUnitOfWork 再次接收初始 wipRoot，但是 wipRoot 被清除了，所以，用另一个变量做 wipRoot 的备份，  
-    赋值给 nextUnitOfWork 以便 workLoop 中的 while 循环能成立以执行。  
+    赋值给 nextUnitOfWork 以便 workLoop 中的 while 循环能成立以执行。
+6. setState 重新触发了 workLoop() 中的 while() 中的 performUnitOfWork，在此函数中，会形成或更新 fiber 架构。  
+    其中会根据元素类型分别形成架构，所以有 updateFunctionComponent()。
+    在此函数中，会执行函数，执行函数时 useState 函数必然会执行。所以，updateFunctionComponent() 这里很关键。
+    应该在这里添加关于 hook 的东西，毕竟 hook 是要纪录和更新值的。  
+7. 添加之前，先添加 wipFiber 全局变量，用来表示当前正在工作的 fiber，然后在 updateFunctionComponent 中初始化它，  
+    添加 hooks 和 hooksIndex 变量。
 
 
 #### 写代码思路：
