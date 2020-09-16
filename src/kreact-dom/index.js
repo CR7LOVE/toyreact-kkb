@@ -91,7 +91,7 @@ function render (vnode, element) {
 // 遍历 children，为当前节点形成 fiber 架构
 function reconcileChildren(fiber, children) {
     let prevSibling = null;
-    let oldFiber = fiber.base && fiber.base.child; // TODO：这里为什么不是 base，而是 base.child
+    let oldFiber = fiber.base && fiber.base.child; // 这里是 reconcileChildren，所以，才是 base.child 和 child 在比较。
     for (let i = 0; i < children.length; i++) {
         let child = children[i];
         let newFiber = null;
@@ -131,7 +131,7 @@ function reconcileChildren(fiber, children) {
         // 1 2 3
         // 2 3 4
         if (oldFiber) {
-            oldFiber = oldFiber.sibling;
+            oldFiber = oldFiber.sibling; // 类似于双循环，其实这就是第二个循环，这里先放下，老师下节课会更新这里，加入 key
         }
 
         if (i === 0 ) {
