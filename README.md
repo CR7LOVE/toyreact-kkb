@@ -101,13 +101,15 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
 #### 过程细分
 1. 先写 useState demo，包含点击时的 setState，确保 ok 后，换成自己的 useState。
 2. setState() 执行时，怎样触发界面更新？
-3. 因为初始化 fiber 时用的是 requestIdleCallback()，所以，首先在 workLoop 中仍然添加上 requestIdleCallback() ，否则更新阶段就无法更新了。
+3. 因为初始化 fiber 时用的是 requestIdleCallback()，所以，首先在 workLoop 中仍然添加上 requestIdleCallback() ，  
+    否则更新阶段就无法更新了。
 4. 在 useState 的 setState 函数中，想办法让 nextUnitOfWork 有值，这样才能继续工作。以前初始化完以后，此变量已经成 falsy 值了。
 5. 其实就是让 nextUnitOfWork 再次接收初始 wipRoot，但是 wipRoot 被清除了，所以，用另一个变量做 wipRoot 的备份，  
     赋值给 nextUnitOfWork 以便 workLoop 中的 while 循环能成立以执行。
 6. setState 重新触发了 workLoop() 中的 while() 中的 performUnitOfWork，在此函数中，会形成或更新 fiber 架构。  
     其中会根据元素类型分别形成架构，所以有 updateFunctionComponent()。
-    在此函数中，会执行函数，执行函数时 useState 函数必然会执行。所以，updateFunctionComponent() 这里很关键。
+    在此函数中，会执行函数，执行函数时如果函数中写了 useState 函数，那么必然会再次执行。  
+    所以，updateFunctionComponent() 这里很关键，updateClassComponent 同理。
     应该在这里添加关于 hook 的东西，毕竟 hook 是要纪录和更新值的。  
 7. 添加之前，先添加 wipFiber 全局变量，用来表示当前正在工作的 fiber，然后在 updateFunctionComponent 中初始化它，  
     添加 hooks 和 hooksIndex 变量。  
@@ -130,3 +132,36 @@ A 的 render 函数的 vdom 在 ReactDOM.render() 执行之后才有。
 7. 在 addAttributesToDOM() 中添加 on 事件
 8. commitWorker 中添加 UPDATE 逻辑，重构 updateNode()，添加旧 props 参数
 9. 展示和更新已经 ok。添加删除逻辑。
+
+#### 其它细节
+1. setState 为什么会触发 render() ? 
+setState 时，wipRoot 和 nextUnitOfWork 重新被赋值，这样 workLoop 再次运行， performUnitOfWork 运行，fiber 架构更新完成。
+接着按照 fiber 更新 DOM。
+重要小细节：
+performUnitOfWork 中会判断类型，
+如果是 class 组件，那么 render() 会被再次触发。render() 被触发，也就是我们经常一直说的，state 或者 prop 变化时，会重新渲染。
+如果是 function 组件，那么会重新执行函数，那么，函数中如果用到 useState 这些，必然会再次执行。
+不论是原生标签，还是自定义组件，都会 reconcileChildren，更新 fiber 架构。
+
+2. 对 hook 闭包的理解？（TODO：等老师解答）
+理解 1 后，setState(x) 会把的参数存下来并且会引发函数组件重新执行。那么函数中的 useState 也会再次执行，执行时会用已经存好的参数更新状态值并返回。
+这块没理解，是 useState 用到了闭包还是 useEffect，还是都是？
+
+3. react 的 增删替换发生的具体过程？
+增：为什么只有 appendChild？（TODO：等老师）
+删除：有当前 fiber.node/fiber.child 和 parentNode，所以可以。
+替换：其实是删除和增。
+更新：只改属性。
+对于旧的属性：删除事件监听；旧的属性有，新的没有，旧的重置一下。
+对于新的属性：添加事件监听；添加属性值。
+
+4. 为什么说 wipFiber.base 有值就是更新的阶段？
+因为新增时 reconcileChildren 中这里赋值是 null，更新阶段才赋值成 oldFiber 的。
+
+5. vue 是实时比，实时更新。React 呢？再对比一下 vue 和 react。
+react 不是，因为 react 有 fiber，更细致。所以，react 是先 diff，更新好架构后，才根据架构更新 dom。
+
+6. 到底这个 fiber 怎样终止的，怎样返回的？
+初始的 fiber 是 wipRoot，此 wipRoot 中以 container 作为 node，props.children 是 jsx 返回的 vdom。
+跟深度优先不一样，也不是广度优先，用我自己的理解就是广-深-广-深，形成 fiber 架构。
+用图 + 代码理解吧，代码在 performUnitOfWork 中。
